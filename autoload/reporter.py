@@ -16,6 +16,7 @@ class Reporter(object):
         ParagraphStyle(name='PageTitle', fontName='Cicle-Strong', fontSize=25, alignment=TA_JUSTIFY),
         ParagraphStyle(name='PageByline', fontName='Cicle', fontSize=20, alignment=TA_JUSTIFY),
         ParagraphStyle(name='Heading', fontName='Cicle-Strong', fontSize=15, alignment=TA_JUSTIFY),
+        ParagraphStyle(name='TableHeading', fontName='Cicle-Strong', fontSize=6, alignment=TA_JUSTIFY),
         ParagraphStyle(name='Text', fontName='Cicle', fontSize=12, alignment=TA_JUSTIFY),
         ParagraphStyle(name='Small', fontName='Cicle', fontSize=6, alignment=TA_JUSTIFY),
     ]
@@ -39,13 +40,18 @@ class Reporter(object):
         )
 
     def draw_footer(self, canvas, doc):
+        canvas.setTitle('Autoload Report')
         canvas.drawImage(ImageReader('media/logo.png'), 675, 15, 100, 13)
 
     def gen_heading(self):
         elements = []
         elements.append(Paragraph('Results - %s' % self.test['title'], self.styles["PageTitle"]))
         elements.append(Spacer(1, 10))
-        elements.append(Paragraph('http://localhost/foo/bar?fubar=1', self.styles["PageByline"]))
+        url = self.test['server']
+        if self.test.has_key('port'):
+            url += ':%s' % self.test['port']
+        url += self.test['uri']
+        elements.append(Paragraph(url, self.styles["PageByline"]))
         elements.append(Spacer(1, 30))
         return elements
     
@@ -70,12 +76,28 @@ class Reporter(object):
         elements = []
         elements.append(Paragraph('Raw HTTPerf Results', self.styles["Heading"]))
         elements.append(Spacer(1, 10))
-    
-        cleaned = self.results.split('\n')[1:]
-        while '' in cleaned:
-            cleaned.remove('')
-        cleaned = '<br />'.join(cleaned)
-        elements.append(Paragraph(cleaned, self.styles["Small"]))
+
+
+        data = [[
+            Paragraph('Request Rate (req/s)', self.styles["TableHeading"]), 
+            Paragraph('Reply Time (ms)', self.styles["TableHeading"]), 
+            Paragraph('Errors', self.styles["TableHeading"]),
+            Paragraph('Net IO (KB/s)', self.styles["TableHeading"]),
+            Paragraph('Reply Rate Avg (req/s)', self.styles["TableHeading"]),
+        ]]
+
+        rates = self.results.keys()
+        rates.sort()
+        for rate in rates:
+            data.append([
+                Paragraph(str(rate), self.styles["TableHeading"]), 
+                Paragraph(str(self.results[rate]['rep_time']), self.styles["Small"]), 
+                Paragraph(str(self.results[rate]['errors']), self.styles["Small"]), 
+                Paragraph(str(self.results[rate]['net_io']), self.styles["Small"]), 
+                Paragraph(str(self.results[rate]['rep_rate_avg']), self.styles["Small"]), 
+            ])
+
+        elements.append(Table(data))
         elements.append(Spacer(1, 20))
         return elements
    
@@ -83,7 +105,11 @@ class Reporter(object):
         elements = []
         elements.append(Paragraph('Conclusion', self.styles["Heading"]))
         elements.append(Spacer(1, 10))
-        elements.append(Paragraph('Recommendation on performance results.', self.styles["Text"]))
+
+        rates = self.results.keys()
+        rates.sort()
+
+        elements.append(Paragraph('Performance starts to degrade at roughly %s requests per second. At %s requests per second the service managed to reply at %s requests per second, reply time is %s percent longer and error rate is %s time(s) more than at idle.' % (rates[-2], rates[-1], int(self.results[rates[-1]]['rep_rate_avg']), int(self.results[rates[-1]]['rep_time']/self.results[rates[0]]['rep_time'] * 100), int(self.results[rates[-1]]['errors'])), self.styles["Text"]))
         elements.append(Spacer(1, 30))
         return elements
 
@@ -103,6 +129,7 @@ class Reporter(object):
         self.layout[0][0] = self.gen_graphs()
         self.layout[1][1] = self.gen_results_table()
         self.layout[2][1] = self.gen_conclusion()
+
         self.elements.append(Table(self.layout, style=[('SPAN',(-2,-3),(-2,-1)),]))
         self.elements.append(Spacer(1, 20))
 
