@@ -1,1 +1,1 @@
-$ sudo apt-get install libgraphicsmagick++-dev libboost-python-dev
+$ sudo apt-get install httperf libgraphicsmagick++-dev libboost-python-dev
