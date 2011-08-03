@@ -44,7 +44,7 @@ class Tester(object):
 
         cleaned_args = {}
         for key, value in test.iteritems():
-            if key not in ['title']:
+            if key not in ['title', 'error_factor']:
                 cleaned_args[key] = value
 
         test_args = ' '.join(['--%s %s' % (key, value) for key, value in cleaned_args.iteritems()])
