@@ -103,7 +103,7 @@ class Tester(object):
         print '-' * len(start_msg)
         
         TEST_COUNT = 8
-        rate_step = breaking_point / TEST_COUNT
+        rate_step = float(breaking_point / TEST_COUNT)
         results = {}
         rate = 0
         for i in range(0, TEST_COUNT + 1):
