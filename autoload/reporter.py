@@ -110,6 +110,7 @@ class Reporter(object):
         rates = self.results.keys()
         rates.sort()
 
+        breaking_point_rate = rates[-2]
         for rate in rates[1:]:
             if self.results[rate]['rep_time'] > self.results[rates[0]]['rep_time'] * 10:
                 breaking_point_rate = rate
