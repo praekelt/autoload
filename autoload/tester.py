@@ -44,7 +44,7 @@ class Tester(object):
 
         cleaned_args = {}
         for key, value in test.iteritems():
-            if key not in ['title', 'error_factor']:
+            if key not in ['title', 'error_factor', 'breaking_point']:
                 cleaned_args[key] = value
 
         test_args = ' '.join(['--%s %s' % (key, value) for key, value in cleaned_args.iteritems()])
@@ -97,11 +97,14 @@ class Tester(object):
         return rate
 
     def run(self, test):
-        try:
-            breaking_point = self.find_breaking_point(test)
-        except HTTPerfError, e:
-            print 'Error: \nUnable to find breaking point, aborting test %s - %s' % (test['title'], e) 
-            return None
+        if test.has_key('breaking_point'):
+            breaking_point = test['breaking_point']
+        else:
+            try:
+                breaking_point = self.find_breaking_point(test)
+            except HTTPerfError, e:
+                print 'Error: \nUnable to find breaking point, aborting test %s - %s' % (test['title'], e) 
+                return None
         
         start_msg = 'Running loadtest for test %s:' % test['title']
         print start_msg
