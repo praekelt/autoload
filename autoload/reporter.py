@@ -112,7 +112,7 @@ class Reporter(object):
 
         i = 0
         for rate in rates[1:]:
-            if self.results[rate]['rep_time'] > self.results[rates[0]]['rep_time'] * 100:
+            if self.results[rate]['rep_time'] > self.results[rates[0]]['rep_time'] * 30:
                 breaking_point_rate = rate
                 breaking_point_index = i
                 break
