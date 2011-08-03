@@ -110,15 +110,12 @@ class Reporter(object):
         rates = self.results.keys()
         rates.sort()
 
-        i = 0
         for rate in rates[1:]:
             if self.results[rate]['rep_time'] > self.results[rates[0]]['rep_time'] * 10:
                 breaking_point_rate = rate
-                breaking_point_index = i
                 break
-            i += 1
 
-        elements.append(Paragraph('Performance starts to degrade at roughly %s requests per second. At %s requests per second the service managed to reply at %s requests per second, reply time is %s percent longer and error rate is %s time(s) more than at idle.' % (breaking_point_rate, breaking_point_rate, int(self.results[rates[breaking_point_index]]['rep_rate_avg']), int(self.results[breaking_point_index]['rep_time']/self.results[rates[0]]['rep_time'] * 100), int(self.results[rates[breaking_point_index]]['errors'])), self.styles["Text"]))
+        elements.append(Paragraph('Performance starts to degrade at roughly %s requests per second. At %s requests per second the service managed to reply at %s requests per second, reply time is %s percent longer and error rate is %s time(s) more than at idle.' % (breaking_point_rate, breaking_point_rate, int(self.results[breaking_point_rate]['rep_rate_avg']), int(self.results[breaking_point_rate]['rep_time']/self.results[rates[0]]['rep_time'] * 100), int(self.results[breaking_point_rate]['errors'])), self.styles["Text"]))
         elements.append(Spacer(1, 30))
         return elements
 
