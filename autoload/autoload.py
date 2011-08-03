@@ -32,7 +32,12 @@ def load_tests():
         if test_section:
             test = {'title': test_section.capitalize()}
             for option in config.options(test_section):
-                test[option] = config.get(test_section, option)
+                value = config.get(test_section, option)
+                if value.lower() == 'true':
+                    value = ''
+                elif value.lower() == 'false':
+                    continue
+                test[option] = value
             tests.append(test)
 
     return tests
