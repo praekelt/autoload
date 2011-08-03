@@ -98,7 +98,7 @@ class Tester(object):
 
     def run(self, test):
         if test.has_key('breaking_point'):
-            breaking_point = test['breaking_point']
+            breaking_point = float(test['breaking_point'])
         else:
             try:
                 breaking_point = self.find_breaking_point(test)
