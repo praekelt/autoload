@@ -11,6 +11,7 @@ setup(
     url='http://github.com/praekelt/autoload',
     packages = find_packages(),
     install_requires = [
+        'pgmagick < 0.4.0',
         'gruffy',
         'reportlab',
     ],
