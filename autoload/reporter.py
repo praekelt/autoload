@@ -51,6 +51,7 @@ class Reporter(object):
         if self.test.has_key('port'):
             url += ':%s' % self.test['port']
         url += self.test['uri']
+        url = url.replace("'", '').replace('"', '')
         elements.append(Paragraph(url, self.styles["PageByline"]))
         elements.append(Spacer(1, 30))
         return elements

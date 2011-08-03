@@ -4,8 +4,8 @@ import signal
 import subprocess
 import time
 
-COOLDOWN_TIME = 20
-ERROR_FACTOR = 20
+COOLDOWN_TIME = 30
+ERROR_FACTOR = 30
 
 def alarm_handler(signum, frame):
     raise Alarm
@@ -78,7 +78,11 @@ class Tester(object):
         previous_result = self.execute_test(1, test)
         result = previous_result
 
-        while result and ((result['rep_rate_avg'] <= previous_result['rep_rate_avg'] * ERROR_FACTOR) and (result['errors'] <= previous_result['errors'] * ERROR_FACTOR) and (result['rep_time'] <= previous_result['rep_time'] * ERROR_FACTOR)):
+        if test.has_key('error_factor'):
+            error_factor = test['error_factor']
+        else:
+            error_factor = ERROR_FACTOR
+        while result and ((result['rep_rate_avg'] <= previous_result['rep_rate_avg'] * error_factor) and (result['errors'] <= previous_result['errors'] * error_factor) and (result['rep_time'] <= previous_result['rep_time'] * error_factor)):
             rate = rate + ((rate/100) + 1) * 10
             previous_result = result
 
