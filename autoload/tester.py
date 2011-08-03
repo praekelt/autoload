@@ -70,7 +70,12 @@ class Tester(object):
         return self.parse_result(stdout_data)
 
     def find_breaking_point(self, test):
-        start_msg = 'Finding breaking point for test %s:' % test['title']
+        if test.has_key('error_factor'):
+            error_factor = test['error_factor']
+        else:
+            error_factor = ERROR_FACTOR
+        start_msg = 'Finding breaking point for test %s, error factor %s:' % (test['title'], error_factor)
+        
         print start_msg
         print '-' * len(start_msg)
         rate = 0
@@ -78,10 +83,6 @@ class Tester(object):
         previous_result = self.execute_test(1, test)
         result = previous_result
 
-        if test.has_key('error_factor'):
-            error_factor = test['error_factor']
-        else:
-            error_factor = ERROR_FACTOR
         while result and ((result['rep_rate_avg'] <= previous_result['rep_rate_avg'] * error_factor) and (result['errors'] <= previous_result['errors'] * error_factor) and (result['rep_time'] <= previous_result['rep_time'] * error_factor)):
             rate = rate + ((rate/100) + 1) * 10
             previous_result = result
