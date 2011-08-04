@@ -1,0 +1,6 @@
+include AUTHORS.rst
+include LICENSE
+include CHANGELOG.rst
+include README.rst
+recursive-include autoload/media *
+recursive-include autoload/fonts *
