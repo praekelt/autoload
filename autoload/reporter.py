@@ -1,3 +1,6 @@
+import os
+
+import autoload
 from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import letter, landscape
 from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
@@ -8,8 +11,8 @@ from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Table
 
 class Reporter(object):
     fonts = {
-        'Cicle': 'fonts/cicle.ttf',
-        'Cicle-Strong': 'fonts/cicle_strong.ttf',
+        'Cicle': os.path.join(os.path.dirname(autoload.__file__), 'fonts', 'cicle.ttf'),
+        'Cicle-Strong': os.path.join(os.path.dirname(autoload.__file__), 'fonts', 'cicle_strong.ttf'),
 
     }
     style_additions =[
@@ -22,7 +25,7 @@ class Reporter(object):
     ]
     elements = []
 
-    def __init__(self):
+    def __init__(self, output):
         for name, path in self.fonts.iteritems():
             pdfmetrics.registerFont(TTFont(name, path))
         
@@ -31,7 +34,7 @@ class Reporter(object):
             self.styles.add(style)
         
         self.doc = SimpleDocTemplate(
-            "report.pdf",
+            output,
             pagesize=landscape(letter),
             rightMargin=52,
             leftMargin=52,

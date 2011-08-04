@@ -15,6 +15,7 @@ setup(
         'gruffy',
         'reportlab',
     ],
+    scripts=['autoload/bin/autoload'],
     include_package_data=True,
     classifiers = [
         "Programming Language :: Python",
