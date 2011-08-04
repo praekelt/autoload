@@ -44,7 +44,7 @@ class Reporter(object):
 
     def draw_footer(self, canvas, doc):
         canvas.setTitle('Autoload Report')
-        canvas.drawImage(ImageReader('media/logo.png'), 675, 15, 100, 13)
+        canvas.drawImage(ImageReader(os.path.join(os.path.dirname(autoload.__file__), 'media', 'logo.png')), 690, 15, 85, 13)
 
     def gen_heading(self):
         elements = []
